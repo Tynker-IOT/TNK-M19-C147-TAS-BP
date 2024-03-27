@@ -1,0 +1,8 @@
+Create a new bot
+1. Open Telegram and search for @BotFather and start chat with this bot.
+2. Type /start to get all available options
+3. Type /newBot to create a new bot
+   It will ask for name of the bot Name it as 'NodeRed' or any other name
+   Then choose username for the bot 'noderedbot' or any other name
+
+

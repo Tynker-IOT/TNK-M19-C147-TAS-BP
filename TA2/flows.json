@@ -1,0 +1,415 @@
+[
+    {
+        "id": "63b7c3880639b180",
+        "type": "ui_gauge",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "group": "3125ee5a8ea0abc1",
+        "order": 0,
+        "width": "5",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "units",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 340,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "400a61b102e6deb1",
+        "type": "mqtt in",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "topic": "humValue",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "ac6659385df72324",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 140,
+        "wires": [
+            [
+                "63b7c3880639b180",
+                "252b1c9e015799df"
+            ]
+        ]
+    },
+    {
+        "id": "5ac4f0a1c6ad70a5",
+        "type": "mqtt in",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "topic": "tempValue",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "ac6659385df72324",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "252b1c9e015799df",
+                "6cc9dc67e2a22d3f"
+            ]
+        ]
+    },
+    {
+        "id": "d69e5e6e51bb9dd1",
+        "type": "function",
+        "z": "ce108bbe1346b4e6",
+        "name": "AddToArray",
+        "func": "var tableData = flow.get(\"savedData\") || []\n\nmsg.payload[\"timeStamp\"] = new Date().toLocaleString()\n\nif(tableData.length>0 )\n{   \n   tableData.unshift( msg.payload)\n}\nelse if(tableData.length==0){\n   tableData.unshift( msg.payload)\n}\n\nmsg.payload = tableData\n\nflow.set(\"savedData\", tableData)\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nflow.set(\"savedData\", [])",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 220,
+        "wires": [
+            [
+                "6568a1ceff6fb818"
+            ]
+        ]
+    },
+    {
+        "id": "252b1c9e015799df",
+        "type": "join",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "10",
+        "count": "",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 330,
+        "y": 260,
+        "wires": [
+            [
+                "d69e5e6e51bb9dd1",
+                "605794b68d6c3354"
+            ]
+        ]
+    },
+    {
+        "id": "6568a1ceff6fb818",
+        "type": "ui_table",
+        "z": "ce108bbe1346b4e6",
+        "group": "d7add96eb24337e9",
+        "name": "Data Table",
+        "order": 1,
+        "width": "20",
+        "height": "5",
+        "columns": [
+            {
+                "field": "timeStamp",
+                "title": "Time Stamp",
+                "width": "30%",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "tempValue",
+                "title": "Temperature",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "phValue",
+                "title": "PH",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "tdsValue",
+                "title": "TDS",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            },
+            {
+                "field": "humValue",
+                "title": "Humidity",
+                "width": "",
+                "align": "center",
+                "formatter": "plaintext",
+                "formatterParams": {
+                    "target": "_blank"
+                }
+            }
+        ],
+        "outputs": 0,
+        "cts": false,
+        "x": 690,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "1d349e893c405216",
+        "type": "mqtt in",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "topic": "phValue",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "ac6659385df72324",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "252b1c9e015799df",
+                "53b5da7a673026f5"
+            ]
+        ]
+    },
+    {
+        "id": "d6b85afa812120fd",
+        "type": "mqtt in",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "topic": "tdsValue",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "ac6659385df72324",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 140,
+        "y": 320,
+        "wires": [
+            [
+                "252b1c9e015799df",
+                "9fa076d8a9626c76"
+            ]
+        ]
+    },
+    {
+        "id": "6cc9dc67e2a22d3f",
+        "type": "ui_gauge",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "group": "3125ee5a8ea0abc1",
+        "order": 1,
+        "width": "5",
+        "height": "3",
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "units",
+        "format": "{{value}}",
+        "min": "-40",
+        "max": "80",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 350,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "53b5da7a673026f5",
+        "type": "ui_gauge",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "group": "3125ee5a8ea0abc1",
+        "order": 2,
+        "width": "5",
+        "height": "3",
+        "gtype": "gage",
+        "title": "PH",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "14",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 330,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "9fa076d8a9626c76",
+        "type": "ui_gauge",
+        "z": "ce108bbe1346b4e6",
+        "name": "",
+        "group": "3125ee5a8ea0abc1",
+        "order": 3,
+        "width": "5",
+        "height": "3",
+        "gtype": "gage",
+        "title": "TDS",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1000",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 330,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "605794b68d6c3354",
+        "type": "function",
+        "z": "ce108bbe1346b4e6",
+        "name": "CheckForThreshold",
+        "func": "var thresholds = {humValue: { low: 12, high: 25 },\n                  tempValue: { low: 20, high: 30 },\n                  phValue: { low: 5.5, high: 7 },\n                  tdsValue: { low: 600, high: 1600 },\n                  }\nvar currentData = msg.payload\n\nvar status = \"\"\nfor (let key in thresholds) {\n  if (currentData[key] < thresholds[key].low || thresholds[key].high < currentData[key]) {\n    status = `${status} ${key} reading is ${currentData[key]}. (range ${thresholds[key].low}-${thresholds[key].high}) \\n`\n  }\n}\n\nmsg.payload=status\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 510,
+        "y": 260,
+        "wires": [
+            [
+                "9a7cd0b4d3f2b350"
+            ]
+        ]
+    },
+    {
+        "id": "9a7cd0b4d3f2b350",
+        "type": "debug",
+        "z": "ce108bbe1346b4e6",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "3125ee5a8ea0abc1",
+        "type": "ui_group",
+        "name": "Guages",
+        "tab": "d3fb97e7a614c68d",
+        "order": 1,
+        "disp": true,
+        "width": "20",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "ac6659385df72324",
+        "type": "mqtt-broker",
+        "name": "C140",
+        "broker": "broker.emqx.io",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "d7add96eb24337e9",
+        "type": "ui_group",
+        "name": "Data Table",
+        "tab": "d3fb97e7a614c68d",
+        "order": 2,
+        "disp": true,
+        "width": "20",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d3fb97e7a614c68d",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
